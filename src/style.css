@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+        height: 100%;
+    }
+    
+#root { /* assuming your React app is mounted in a div with id 'root' */
+    height: 100%;
+    }
+
+.select-style {
+    display: inline-block;
+    width: 20%;
+    height: 40px;
+    padding: 8px 15px;
+    padding-right: 30px;
+    font-size: 16px;
+    text-align-last: center;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width="14" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 8L10 13L15 8" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    transition: border-color .2s ease-in-out;
+    }
+    
+    .select-style:hover {
+        border-color: #c0c4cc;
+    }
+    
+    .select-style:focus {
+        outline: none;
+        border-color: #409eff;
+    }
+
+.input-style {
+    display: inline-block;
+    width: 20%;
+    height: 40px;
+    padding: 8px 15px;
+    font-size: 16px;
+    text-align-last: center;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 4px; /* To give some space from the element on the left */
+    margin-right: 4px; /* To give some space for the select icon on the right */
+    transition: border-color .2s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    }
+    
+    .input-style:hover {
+        border-color: #c0c4cc;
+    }
+    
+    .input-style:focus {
+        outline: none;
+        border-color: #409eff;
+    }
+    
