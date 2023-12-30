@@ -11,11 +11,18 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 export default function MyTable({ records, setRecords, items }) {
     const [newItem, setNewItem] = useState({ item: '', rate: '', qty: 1, total: 0 });
     console.log('items',items)
+    console.log('records',records)
 
     const handleItemChange = (selectedItemName) => {
         const selectedItem = items.find(item => item.Name === selectedItemName);
         const selectedRate = selectedItem ? selectedItem.Rate : '';
         setNewItem({ ...newItem, item: selectedItemName, rate: selectedRate });
+    };
+
+    const handleNoteChange = (note, index) => {
+        const updatedRecords = [...records];
+        updatedRecords[index] = { ...updatedRecords[index], Note: note };
+        setRecords(updatedRecords);
     };
 
     const addToInvoice = () => {
@@ -51,7 +58,8 @@ export default function MyTable({ records, setRecords, items }) {
             Name: newItem.item,  // Use the Name from the newItem
             Rate: newItem.rate,  // Use the Rate from the newItem
             Qty: newItem.qty,    // Use the Qty from the newItem
-            Total: (parseFloat(newItem.rate) * parseInt(newItem.qty)).toFixed(2) // Calculate the total
+            Total: (parseFloat(newItem.rate) * parseInt(newItem.qty)).toFixed(2), // Calculate the total
+            Note: ''
         };
     
         setRecords([...records, newRecord]);
@@ -127,12 +135,17 @@ export default function MyTable({ records, setRecords, items }) {
                                                         {...provided.dragHandleProps}
                                                         className="flex flex-row justify-between bg-gray-50 p-4"
                                                     >
-                                                        {/* Your record content here */}
                                                         <div className="w-1/5 flex items-center justify-center">{record.Name}</div>
                                                         <div className="w-1/5 flex items-center justify-center">${record.Rate}</div>
                                                         <div className="w-1/5 flex items-center justify-center">{record.Qty}</div>
                                                         <div className="w-1/5 flex items-center justify-center">${record.Total}</div>
-                                                        <div className="w-1/5 flex items-center justify-center"></div>
+                                                        <input
+                                                            className="input-style"
+                                                            type="text"
+                                                            value={record.Note || ''}
+                                                            placeholder="add note"
+                                                            onChange={(e) => handleNoteChange(e.target.value, index)}
+                                                        />
                                                     </div>
                                                 )}
                                             </Draggable>

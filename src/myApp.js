@@ -286,27 +286,60 @@ const itemData = {
 */
 
 
-const MyApp = ({itemData}) => {
-  console.log('init MyApp')
-  console.log('init ItemData',itemData)
-  const [records, setRecords] = useState([]);
+const MyApp = ({itemData,initRecords}) => {
+	console.log('init MyApp')
+	console.log('init ItemData',itemData)
+	console.log('init recordData',initRecords)
 
-  const items = () => {
-    const itemArray = itemData.QueryResponse.Item;
-    let result = itemArray.map((item) => {
-      if (item.ParentRef.value === "4") {
-        return { Id: item.Id, Name: item.Name, Rate: item.UnitPrice };
-      }
-      return null;
-    }).filter(item => item !== null); // Filter out null values
-    return result;
-  };
+    // Function to transform the initial record
+    const transformedRecords = () => {
+		//console.log('initRecords:', initRecords[0]);
+		//console.log('itemData.Item:', itemData.Item);
+	
+		if (!initRecords || Object.keys(initRecords).length === 0) return [];
+	
+		const matchingItem = itemData.Item.find(item => {
+			//console.log('Comparing:', item.Name, 'to', initRecords[0].Item);
+			return item.Name === initRecords[0].Item;
+		});
+	
+		//console.log('matchingItem:', matchingItem);
+	
+		if (!matchingItem) {
+			console.error("Matching item not found.");
+			return [];
+		}
+	
+		const record = {
+			Id: matchingItem.Id,
+			Name: initRecords[0].Item,
+			Rate: initRecords[0].rate,
+			Qty: initRecords[0].qty,
+			Total: (parseFloat(initRecords[0].rate) * parseInt(initRecords[0].qty)).toFixed(2),
+			Note: initRecords[0].Note,
+		};
+		//console.log('transformedRecord:', record);
+	
+		return [record];
+	};
+	const [records, setRecords] = useState(transformedRecords());
 
-  return (
-    <>
-      <MyTable setRecords={setRecords} records={records} items={items()} />
-    </>
-  );
+	const items = () => {
+		const itemArray = itemData.Item;
+		let result = itemArray.map((item) => {
+		if (item.ParentRef.value === "4") {
+			return { Id: item.Id, Name: item.Name, Rate: item.UnitPrice };
+		}
+		return null;
+		}).filter(item => item !== null); // Filter out null values
+		return result;
+	};
+
+	return (
+		<>
+		<MyTable setRecords={setRecords} records={records} items={items()} />
+		</>
+	);
 };
 
 export default MyApp;
