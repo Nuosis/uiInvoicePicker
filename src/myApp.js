@@ -16,6 +16,12 @@ const MyApp = ({initData,initRecords}) => {
 		return initRecords.map(record => {
 			console.log('record',record)
 			console.log('record.Item',record.Item)
+
+			// If record.Id is set, return the record as is
+			if (record.Id) {
+				return record;
+			}
+
 			// Find the matching item in itemData.Item for each record
 			const matchingItem = itemData.Item.find(item => item.Name === record.Item);
 			console.log('matchingItem',matchingItem)
@@ -30,9 +36,9 @@ const MyApp = ({initData,initRecords}) => {
 			return {
 				Id: matchingItem.Id,
 				Name: record.Item,
-				Rate: record.rate,
-				Qty: record.qty,
-				Total: (parseFloat(record.rate) * parseInt(record.qty)).toFixed(2),
+				Rate: record.Rate,
+				Qty: record.Qty,
+				Total: (parseFloat(record.Rate) * parseFloat(record.Qty)).toFixed(2),
 				Note: record.Note,
 			};
 		}).filter(record => record !== null); // Filter out any null values if a matching item was not found
