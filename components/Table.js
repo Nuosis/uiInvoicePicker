@@ -2,9 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 export default function MyTable({ records, setRecords, items }) {
-    const [newItem, setNewItem] = useState({ item: '', rate: '', qty: 1, total: 0 });
     console.log('items',items)
     console.log('records',records)
+
+
+    const [newItem, setNewItem] = useState({ item: '', rate: '', qty: 1, total: 0 });
+
+
+    const calculateGrandTotal = () => {
+        if (!records || records.length === 0) return '0';
+        return records.reduce((sum, record) => sum + parseFloat(record.Total || 0), 0).toFixed(2);
+    };
+    const [grandTotal, setGrandTotal] = useState(calculateGrandTotal());
 
     const handleItemChange = (selectedItemName) => {
         const selectedItem = items.find(item => item.Name === selectedItemName);
@@ -15,6 +24,18 @@ export default function MyTable({ records, setRecords, items }) {
     const handleNoteChange = (note, index) => {
         const updatedRecords = [...records];
         updatedRecords[index] = { ...updatedRecords[index], Note: note };
+        setRecords(updatedRecords);
+    };
+
+    const handleRowClick = (index) => {
+        const selectedRecord = records[index];
+        setNewItem({ 
+            item: selectedRecord.Name, 
+            rate: selectedRecord.Rate, 
+            qty: selectedRecord.Qty, 
+            total: selectedRecord.Total 
+        });
+        const updatedRecords = records.filter((_, idx) => idx !== index);
         setRecords(updatedRecords);
     };
 
@@ -54,13 +75,19 @@ export default function MyTable({ records, setRecords, items }) {
             Total: (parseFloat(newItem.rate) * parseFloat(newItem.qty)).toFixed(2), // Calculate the total
             Note: ''
         };
+        
+        // Update records
+        const updatedRecords = [...records, newRecord];
+        setRecords(updatedRecords);
     
-        setRecords([...records, newRecord]);
+        // Calculate and update the grand total
+        const totalSum = updatedRecords.reduce((sum, record) => sum + parseFloat(record.Total), 0);
+        setGrandTotal(totalSum.toFixed(2));
         setNewItem({ item: '', rate: '', qty: 1, total: 0 }); // Reset inputs after adding
     };
     
     const sendToFileMaker = () => {
-        const obj = {records, path: 'createInvoice'}
+        const obj = {records, grandTotal, path: 'createInvoice'}
         FileMaker.PerformScript("webViewer . callbacks", JSON.stringify(obj));
     };
     
@@ -69,9 +96,10 @@ export default function MyTable({ records, setRecords, items }) {
         setNewItem({ ...newItem, total: (newItem.rate * newItem.qty).toFixed(2) });
     }, [newItem.rate, newItem.qty]);
 
-    const deleteRow = (Id) => {
-        // a function to remove item from reacords
-    };
+    useEffect(() => {
+        const newGrandTotal = records.reduce((sum, record) => sum + parseFloat(record.Total || 0), 0).toFixed(2);
+        setGrandTotal(newGrandTotal);
+    }, [records]);
 
     const onDragEnd = (result) => {
         const { destination, source } = result;
@@ -128,10 +156,10 @@ export default function MyTable({ records, setRecords, items }) {
                                                         {...provided.dragHandleProps}
                                                         className="flex flex-row justify-between bg-gray-50 p-4"
                                                     >
-                                                        <div className="w-1/5 flex items-center justify-center">{record.Name}</div>
-                                                        <div className="w-1/5 flex items-center justify-center">${record.Rate}</div>
-                                                        <div className="w-1/5 flex items-center justify-center">{record.Qty}</div>
-                                                        <div className="w-1/5 flex items-center justify-center">${record.Total}</div>
+                                                        <div className="w-1/5 flex items-center justify-center" onClick={() => handleRowClick(index)}>{record.Name}</div>
+                                                        <div className="w-1/5 flex items-center justify-center" onClick={() => handleRowClick(index)}>${record.Rate}</div>
+                                                        <div className="w-1/5 flex items-center justify-center" onClick={() => handleRowClick(index)}>{record.Qty}</div>
+                                                        <div className="w-1/5 flex items-center justify-center" onClick={() => handleRowClick(index)}>${record.Total}</div>
                                                         <input
                                                             className="input-style"
                                                             type="text"
@@ -154,7 +182,7 @@ export default function MyTable({ records, setRecords, items }) {
                                     className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out"
                                     onClick={() => sendToFileMaker()}
                                 >
-                                    Create Invoice
+                                    Create Invoice for ${grandTotal}
                                 </button>
                             </div>
                         )}

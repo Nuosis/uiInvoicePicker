@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 
 let root; // Store the root outside the function
 window.loadTable = (data) => {
-    console.log('version', 1.03);
+    console.log('version', 1.04);
     const json = JSON.parse(data);
     console.log('initData', json);
     const records = Array.isArray(json.record) ? json.record : (json.record ? [json.record] : []);
