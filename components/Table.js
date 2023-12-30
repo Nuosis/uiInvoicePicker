@@ -1,10 +1,3 @@
-/*
-const items = [
-    { Id: 4, Name: 'Developement CAD' },
-    { Id: 5, Name: 'FM Hosting' },
-    ]
-*/
-
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
@@ -58,7 +51,7 @@ export default function MyTable({ records, setRecords, items }) {
             Name: newItem.item,  // Use the Name from the newItem
             Rate: newItem.rate,  // Use the Rate from the newItem
             Qty: newItem.qty,    // Use the Qty from the newItem
-            Total: (parseFloat(newItem.rate) * parseInt(newItem.qty)).toFixed(2), // Calculate the total
+            Total: (parseFloat(newItem.rate) * parseFloat(newItem.qty)).toFixed(2), // Calculate the total
             Note: ''
         };
     
@@ -67,7 +60,7 @@ export default function MyTable({ records, setRecords, items }) {
     };
     
     const sendToFileMaker = () => {
-        const obj = {records}
+        const obj = {records, path: 'createInvoice'}
         FileMaker.PerformScript("webViewer . callbacks", JSON.stringify(obj));
     };
     
@@ -127,7 +120,7 @@ export default function MyTable({ records, setRecords, items }) {
                                 {(provided) => (
                                     <section {...provided.droppableProps} ref={provided.innerRef} className="divide-y divide-gray-200 bg-white overflow-y-auto">
                                         {(records || []).map((record, index) => (
-                                            <Draggable key={record.Id} draggableId={record.Id.toString()} index={index}>
+                                            <Draggable key={index} draggableId={record.Id.toString()} index={index}>
                                                 {(provided) => (
                                                     <div
                                                         ref={provided.innerRef}
