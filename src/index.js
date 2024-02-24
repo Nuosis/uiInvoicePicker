@@ -4,9 +4,23 @@ import { createRoot } from "react-dom/client";
 
 let root; // Store the root outside the function
 window.loadTable = (data) => {
-    console.log('version', 1.04);
-    const json = JSON.parse(data);
+    console.log('version', 1.05);
+    // Check if data is null or empty string
+    if (!data) {
+        console.error('Data is null or not provided');
+        data = '{}'; // Provide a default empty object as a string if data is null
+    }
+
+    let json;
+    try {
+        json = JSON.parse(data);
+    } catch (e) {
+        console.error('Invalid JSON format:', e);
+        json = {}; // Provide a default empty object if JSON parsing fails
+    }
+
     console.log('initData', json);
+
     const records = Array.isArray(json.record) ? json.record : (json.record ? [json.record] : []);
     console.log('initRecord', records);
 
@@ -24,11 +38,14 @@ window.loadTable = (data) => {
             if (!root) {
                 root = createRoot(container);
             }
-            root.render(<MyApp initData={json.QueryResponse} initRecords={records} />);
+            // Adjusted to handle cases where json.QueryResponse might be undefined
+            root.render(<MyApp initData={json.QueryResponse || {}} initRecords={records} />);
         } else {
             console.error("Element with id 'root' not found during mount");
         }
     } catch (e) {
-        console.error("Error loading app v1.03:", e);
+        console.error("Error loading app v1.05:", e);
     }
 };
+
+loadTable()
