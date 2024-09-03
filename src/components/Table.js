@@ -4,8 +4,6 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 export default function MyTable({ records, setRecords, items }) {
     console.log('items',items)
     console.log('records',records)
-
-
     const [newItem, setNewItem] = useState({ item: '', rate: '', qty: 1, total: 0 });
 
 
@@ -33,13 +31,15 @@ export default function MyTable({ records, setRecords, items }) {
             item: selectedRecord.Name, 
             rate: selectedRecord.Rate, 
             qty: selectedRecord.Qty, 
-            total: selectedRecord.Total 
+            total: selectedRecord.Total,
+            note: selectedRecord.Note 
         });
         const updatedRecords = records.filter((_, idx) => idx !== index);
         setRecords(updatedRecords);
     };
 
     const addToInvoice = () => {
+      console.log("addToInvoice Clicked")
         if (!newItem.item || newItem.item === 'Select Item') {
             alert('Please select an item.');
             return; // Exit the function early
@@ -68,12 +68,12 @@ export default function MyTable({ records, setRecords, items }) {
     
         // Construct the new record with all needed properties
         const newRecord = {
-            Id: selectedItem.Id, // Use the Id from the selectedItem
-            Name: newItem.item,  // Use the Name from the newItem
-            Rate: newItem.rate,  // Use the Rate from the newItem
-            Qty: newItem.qty,    // Use the Qty from the newItem
+            Id: selectedItem.Id, 
+            Name: newItem.item, 
+            Rate: newItem.rate, 
+            Qty: newItem.qty,    
             Total: (parseFloat(newItem.rate) * parseFloat(newItem.qty)).toFixed(2), // Calculate the total
-            Note: ''
+            Note: newItem.note || ''
         };
         
         // Update records
