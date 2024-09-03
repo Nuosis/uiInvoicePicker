@@ -4,7 +4,6 @@ import { createRoot } from "react-dom/client";
 
 let root; // Store the root outside the function
 window.loadTable = (data) => {
-    console.log('version', 1.05);
     // Check if data is null or empty string
     if (!data) {
         console.error('Data is null or not provided');
@@ -48,4 +47,30 @@ window.loadTable = (data) => {
     }
 };
 
+console.log(
+    "v1.0.5",
+    {
+        "FUNCTIONS":[
+            "loadTable",
+            {
+                "Props":[
+                    {initData:{
+                            "QueryResponse": ""
+                        }
+                    },
+                    {initRecords:{
+                            "records": [{
+                                "Item":"",
+                                "Note":"",
+                                "Qty":"",
+                                "Rate":"",
+                            }]
+                        }
+                    },
+                ]
+            }
+        ]
+
+    }
+)
 loadTable()
